@@ -1,6 +1,7 @@
 package com.example.newsapp.News
 
 
+import NewsScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
