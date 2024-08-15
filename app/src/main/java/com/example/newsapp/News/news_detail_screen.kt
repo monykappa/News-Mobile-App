@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleDetailScreen(articleId: String, navController: NavController, viewModel: NewsViewModel = viewModel()) {
@@ -50,7 +49,8 @@ fun ArticleDetailScreen(articleId: String, navController: NavController, viewMod
                     Text(
                         text = article?.title?.let { truncateTitle(it) } ?: "Loading...",
                         maxLines = 1, // Ensure title is on one line
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Black // Set the title text color to black
                     )
                 },
                 navigationIcon = {
@@ -59,7 +59,8 @@ fun ArticleDetailScreen(articleId: String, navController: NavController, viewMod
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White // Set the background color of the TopAppBar to white
+                    containerColor = Color.White, // Set the background color of the TopAppBar to white
+                    titleContentColor = Color.Black // Ensure the title text color is black
                 )
             )
         }

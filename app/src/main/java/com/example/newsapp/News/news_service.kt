@@ -11,7 +11,7 @@ const val News_Base_Url = "https://newsapi.org/v2/"
 interface TheNewsService {
     @GET("everything")
     suspend fun getArticles(
-        @Query("q") query: String = "Latest News",
+        @Query("q") query: String = "Android",
         @Query("apiKey") apiKey: String = "0ce2d9d56ce548108c9f87e7f3827bf5",
         @Query("page") page: Int = 1,
         @Query("pageSize") pageSize: Int = 50

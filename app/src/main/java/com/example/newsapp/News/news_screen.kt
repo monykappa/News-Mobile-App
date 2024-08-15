@@ -1,6 +1,7 @@
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +30,6 @@ import java.util.Date
 import java.util.Locale
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
@@ -41,14 +41,19 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewMode
             TopAppBar(
                 title = { Text("Fresh News") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = Color.White, // Set the background color to white
+                    titleContentColor = Color.Black, // Set the text color to black
+                    actionIconContentColor = Color.Black // Set action icons color to black
                 )
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .background(Color.White) // Set the background color to white
+                .fillMaxSize()
+        ) {
             when {
                 error != null -> {
                     ErrorMessage(error = error!!)
@@ -63,6 +68,7 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewMode
         }
     }
 }
+
 
 @Composable
 fun ErrorMessage(error: String) {
@@ -112,7 +118,8 @@ fun ArticleItem(article: Article, navController: NavController) {
                 navController.navigate("article/$encodedUrl")
             },
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White) // Set card background color to white
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             article.urlToImage?.let { imageUrl ->
@@ -140,16 +147,23 @@ fun ArticleItem(article: Article, navController: NavController) {
             ) {
                 Text(
                     text = article.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+
                 Text(
                     text = article.description ?: "",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = Color.Gray
+                    ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+
                 Text(
                     text = formatDate(article.publishedAt),
                     style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray)
@@ -158,6 +172,7 @@ fun ArticleItem(article: Article, navController: NavController) {
         }
     }
 }
+
 
 @Composable
 fun formatDate(publishedAt: String): String {
