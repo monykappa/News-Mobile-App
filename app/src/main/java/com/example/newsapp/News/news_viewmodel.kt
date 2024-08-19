@@ -28,7 +28,7 @@ class NewsViewModel : ViewModel() {
     fun fetchArticles() {
         viewModelScope.launch {
             try {
-                val response = TheNewsService.getInstance().getArticles()
+                val response = TheNewsService.getInstance().getArticles() // Fetch articles
                 if (response.status == "ok") {
                     _articles.value = response.articles
                 } else {
@@ -42,7 +42,7 @@ class NewsViewModel : ViewModel() {
 
     fun getArticleById(articleId: String): StateFlow<Article?> {
         return articles.map { articleList ->
-            articleList.find { it.url == articleId }
+            articleList.find { it.url == articleId } // Find article by ID
         }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     }
 }

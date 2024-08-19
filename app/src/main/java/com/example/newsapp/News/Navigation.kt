@@ -82,6 +82,7 @@ fun BottomBar(navController: NavHostController) {
             selected = navController.currentBackStackEntry?.destination?.route == "search",
             onClick = { navController.navigate("search") { launchSingleTop = true } }
         )
+
         BottomNavigationItem(
             icon = {
                 Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.Black)
@@ -116,11 +117,7 @@ fun BottomBar(navController: NavHostController) {
 
 
 
-@Composable
-fun SearchScreen(navController: NavHostController) {
-    // Your SearchScreen content here
-    Text("Search Screen")
-}
+
 
 @Composable
 fun FavoriteScreen(navController: NavHostController) {

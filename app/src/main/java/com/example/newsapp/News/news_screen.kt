@@ -116,6 +116,7 @@ fun ArticleItem(article: Article, navController: NavController) {
             .clickable {
                 val encodedUrl = Uri.encode(article.url)
                 navController.navigate("article/$encodedUrl")
+
             },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
