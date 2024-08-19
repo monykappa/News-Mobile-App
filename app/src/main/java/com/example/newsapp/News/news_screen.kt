@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,6 +36,7 @@ import java.util.Locale
 @Composable
 fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
     val articles by viewModel.articles.collectAsState()
+    val favoriteArticles by viewModel.favoriteArticles.collectAsState()
     val error by viewModel.error.collectAsState()
 
     Scaffold(
@@ -62,12 +65,20 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewMode
                     LoadingIndicator()
                 }
                 else -> {
-                    NewsList(articles = articles, navController = navController)
+                    NewsList(
+                        articles = articles,
+                        favoriteArticles = favoriteArticles,
+                        isFavorite = { article -> viewModel.isFavorite(article) },
+                        onFavoriteClick = { article -> viewModel.toggleFavorite(article) },
+                        navController = navController
+                    )
                 }
             }
         }
     }
 }
+
+
 
 
 @Composable
@@ -95,20 +106,38 @@ fun LoadingIndicator() {
 }
 
 @Composable
-fun NewsList(articles: List<Article>, navController: NavController) {
+fun NewsList(
+    articles: List<Article>,
+    favoriteArticles: List<Article>, // Pass favorite articles here
+    isFavorite: (Article) -> Boolean, // Function to check if an article is a favorite
+    onFavoriteClick: (Article) -> Unit, // Function to handle favorite click
+    navController: NavController
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(articles) { article ->
-            ArticleItem(article, navController)
+            val isArticleFavorite = isFavorite(article)
+            ArticleItem(
+                article = article,
+                isFavorite = isArticleFavorite,
+                onFavoriteClick = onFavoriteClick,
+                navController = navController
+            )
         }
     }
 }
 
+
 @Composable
-fun ArticleItem(article: Article, navController: NavController) {
+fun ArticleItem(
+    article: Article,
+    isFavorite: Boolean,
+    onFavoriteClick: (Article) -> Unit,
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +145,6 @@ fun ArticleItem(article: Article, navController: NavController) {
             .clickable {
                 val encodedUrl = Uri.encode(article.url)
                 navController.navigate("article/$encodedUrl")
-
             },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -169,6 +197,14 @@ fun ArticleItem(article: Article, navController: NavController) {
                     text = formatDate(article.publishedAt),
                     style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray)
                 )
+
+                IconButton(onClick = { onFavoriteClick(article) }) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                        tint = if (isFavorite) Color.Red else Color.Gray
+                    )
+                }
             }
         }
     }

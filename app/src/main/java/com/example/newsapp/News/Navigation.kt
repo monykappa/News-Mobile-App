@@ -120,12 +120,6 @@ fun BottomBar(navController: NavHostController) {
 
 
 @Composable
-fun FavoriteScreen(navController: NavHostController) {
-    // Your FavoriteScreen content here
-    Text("Favorite Screen")
-}
-
-@Composable
 fun SettingsScreen(navController: NavHostController) {
     // Your SettingsScreen content here
     Text("Settings Screen")

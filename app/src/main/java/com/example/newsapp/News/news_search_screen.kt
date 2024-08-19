@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun SearchScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
     val articles by viewModel.articles.collectAsState()
+    val favoriteArticles by viewModel.favoriteArticles.collectAsState()
     val query = remember { mutableStateOf("") }
 
     Column(
@@ -50,14 +51,23 @@ fun SearchScreen(navController: NavController, viewModel: NewsViewModel = viewMo
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (query.value.isNotEmpty()) {
-            val filteredArticles = articles.filter { it.title.contains(query.value, ignoreCase = true) }
-            NewsList(articles = filteredArticles, navController = navController)
+        val filteredArticles = if (query.value.isNotEmpty()) {
+            articles.filter { it.title.contains(query.value, ignoreCase = true) }
         } else {
-            NewsList(articles = articles, navController = navController)
+            articles
         }
+
+        NewsList(
+            articles = filteredArticles,
+            favoriteArticles = favoriteArticles,
+            isFavorite = { article -> viewModel.isFavorite(article) },
+            onFavoriteClick = { article -> viewModel.toggleFavorite(article) },
+            navController = navController
+        )
     }
 }
+
+
 
 @Composable
 fun SearchBar(
