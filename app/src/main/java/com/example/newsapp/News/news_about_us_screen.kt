@@ -1,8 +1,5 @@
 package com.example.newsapp.News
 
-
-import ArticleItem
-import NewsList
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -16,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,26 +33,19 @@ import com.example.newsapp.News.NewsViewModel
 import com.example.newsapp.R
 import java.util.Date
 import java.util.Locale
-import android.util.Log
 
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
-    val favoriteArticles by viewModel.favoriteArticles.collectAsState()
-
-    // Debugging output
-    Log.d("FavoriteScreen", "Favorite articles: $favoriteArticles")
-
+fun AboutUsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Favorite Articles") },
+                title = { Text("About Us") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.White,
-                    titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
+                    titleContentColor = Color.Black
                 )
             )
         }
@@ -62,20 +53,14 @@ fun FavoriteScreen(navController: NavController, viewModel: NewsViewModel = view
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .background(Color.White)
                 .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp)
         ) {
-            if (favoriteArticles.isEmpty()) {
-                Text("No favorite articles yet.", modifier = Modifier.align(Alignment.Center))
-            } else {
-                NewsList(
-                    articles = favoriteArticles,
-                    favoriteArticles = favoriteArticles,
-                    isFavorite = { article -> viewModel.isFavorite(article) },
-                    onFavoriteClick = { article -> viewModel.toggleFavorite(article) },
-                    navController = navController
-                )
-            }
+            Text(
+                text = "Welcome to the News Mobile App! Our app provides up-to-date news articles and local news coverage from around the world. We aim to keep you informed with the latest and most relevant news stories. Thank you for using our app and supporting our mission to deliver quality news content.",
+                color = Color.Black
+            )
         }
     }
 }

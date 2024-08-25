@@ -2,6 +2,8 @@ package com.example.newsapp.News
 
 import com.google.gson.annotations.SerializedName
 
+
+
 data class ApiResponse(
     @SerializedName("status")
     val status: String,

@@ -22,15 +22,11 @@ class NewsViewModel : ViewModel() {
     private val _articles = MutableStateFlow<List<Article>>(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles
 
-    private val _favoriteArticles = MutableStateFlow<List<Article>>(emptyList())
-    val favoriteArticles: StateFlow<List<Article>> get() = _favoriteArticles
-
-
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
     init {
-        fetchArticles()
+        fetchArticles() // Default to fetching latest news
     }
 
     fun fetchArticles() {
@@ -48,25 +44,24 @@ class NewsViewModel : ViewModel() {
         }
     }
 
-    fun toggleFavorite(article: Article) {
-        val currentFavorites = _favoriteArticles.value.toMutableList()
-        if (currentFavorites.contains(article)) {
-            currentFavorites.remove(article)
-        } else {
-            currentFavorites.add(article)
+    fun fetchLocalNews() {
+        viewModelScope.launch {
+            try {
+                val response = TheNewsService.getInstance().getLocalNews()
+                if (response.status == "ok") {
+                    _articles.value = response.articles
+                } else {
+                    _error.value = "Failed to fetch local news"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
         }
-        _favoriteArticles.value = currentFavorites
-        Log.d("NewsViewModel", "Favorites updated: ${_favoriteArticles.value}")
     }
 
     fun getArticleById(articleId: String): StateFlow<Article?> {
         return articles.map { articleList ->
             articleList.find { it.url == articleId }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    }
-
-
-    fun isFavorite(article: Article): Boolean {
-        return _favoriteArticles.value.contains(article)
     }
 }

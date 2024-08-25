@@ -2,19 +2,17 @@ package com.example.newsapp.News
 
 
 import NewsScreen
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
@@ -32,7 +30,6 @@ import androidx.compose.ui.unit.dp
 
 
 
-
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
     Scaffold(
@@ -45,8 +42,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         ) {
             composable("home") { NewsScreen(navController) }
             composable("search") { SearchScreen(navController) }
-            composable("favorite") { FavoriteScreen(navController) }
-            composable("settings") { SettingsScreen(navController) }
+            composable("localnews") { LocalNewsScreen(navController) }
+            composable("about") { AboutUsScreen(navController) }
             composable("article/{articleId}") { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId") ?: ""
                 ArticleDetailScreen(articleId, navController)
@@ -54,13 +51,11 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
     }
 }
-
-
 @Composable
 fun BottomBar(navController: NavHostController) {
     BottomNavigation(
-        backgroundColor = Color.White, // Set background color to white
-        elevation = 0.dp // Remove elevation to ensure border appears as intended
+        backgroundColor = Color.White,
+        elevation = 0.dp
     ) {
         BottomNavigationItem(
             icon = {
@@ -82,48 +77,39 @@ fun BottomBar(navController: NavHostController) {
             selected = navController.currentBackStackEntry?.destination?.route == "search",
             onClick = { navController.navigate("search") { launchSingleTop = true } }
         )
-
         BottomNavigationItem(
             icon = {
-                Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.Black)
+                Icon(Icons.Filled.Favorite, contentDescription = "Local News", tint = Color.Black)
             },
             label = {
-                Text("Favorite", color = Color.Black)
+                Text("Local", color = Color.Black)
             },
-            selected = navController.currentBackStackEntry?.destination?.route == "favorite",
-            onClick = { navController.navigate("favorite") { launchSingleTop = true } }
+            selected = navController.currentBackStackEntry?.destination?.route == "localnews",
+            onClick = { navController.navigate("localnews") { launchSingleTop = true } }
         )
         BottomNavigationItem(
             icon = {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = Color.Black)
+                Icon(Icons.Filled.Info, contentDescription = "About Us", tint = Color.Black)
             },
             label = {
-                Text("Settings", color = Color.Black)
+                Text("About Us", color = Color.Black)
             },
-            selected = navController.currentBackStackEntry?.destination?.route == "settings",
-            onClick = { navController.navigate("settings") { launchSingleTop = true } }
+            selected = navController.currentBackStackEntry?.destination?.route == "about",
+            onClick = { navController.navigate("about") { launchSingleTop = true } }
         )
     }
-    // Apply a black top border
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(Color.Black) // Set the top border color to black
+            .background(Color.Black)
     )
 }
 
 
 
 
-
-
-
-@Composable
-fun SettingsScreen(navController: NavHostController) {
-    // Your SettingsScreen content here
-    Text("Settings Screen")
-}
 
 @Preview(showBackground = true)
 @Composable

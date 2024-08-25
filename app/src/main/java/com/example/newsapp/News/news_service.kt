@@ -11,7 +11,7 @@ const val News_Base_Url = "https://newsapi.org/v2/"
 interface TheNewsService {
     @GET("everything")
     suspend fun getArticles(
-        @Query("q") query: String = "Latest", // Default query for the home screen
+        @Query("q") query: String = "International",
         @Query("apiKey") apiKey: String = "0ce2d9d56ce548108c9f87e7f3827bf5",
         @Query("page") page: Int = 1,
         @Query("pageSize") pageSize: Int = 50
@@ -19,7 +19,15 @@ interface TheNewsService {
 
     @GET("everything")
     suspend fun getArticlesWithQuery(
-        @Query("q") query: String? = null, // Null query for custom searches
+        @Query("q") query: String? = null,
+        @Query("apiKey") apiKey: String = "0ce2d9d56ce548108c9f87e7f3827bf5",
+        @Query("page") page: Int = 1,
+        @Query("pageSize") pageSize: Int = 50
+    ): ApiResponse
+
+    @GET("everything")
+    suspend fun getLocalNews(
+        @Query("q") query: String = "Cambodia",
         @Query("apiKey") apiKey: String = "0ce2d9d56ce548108c9f87e7f3827bf5",
         @Query("page") page: Int = 1,
         @Query("pageSize") pageSize: Int = 50
@@ -40,4 +48,3 @@ interface TheNewsService {
         }
     }
 }
-

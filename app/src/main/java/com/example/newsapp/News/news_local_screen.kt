@@ -1,3 +1,10 @@
+package com.example.newsapp.News
+
+
+import ArticleItem
+import ErrorMessage
+import LoadingIndicator
+import NewsList
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -26,23 +33,30 @@ import androidx.core.net.ParseException
 import coil.compose.rememberImagePainter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.newsapp.News.Article
 import com.example.newsapp.News.NewsViewModel
 import com.example.newsapp.R
+import formatDate
 import java.util.Date
 import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
+fun LocalNewsScreen(navController: NavController, viewModel: NewsViewModel = viewModel()) {
     val articles by viewModel.articles.collectAsState()
     val error by viewModel.error.collectAsState()
+
+    // Fetch local news when this screen is displayed
+    LaunchedEffect(Unit) {
+        viewModel.fetchLocalNews()
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("International News") },
+                title = { Text("Cambodia News") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
@@ -65,10 +79,18 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewMode
                     LoadingIndicator()
                 }
                 else -> {
-                    NewsList(
-                        articles = articles,
-                        navController = navController
-                    )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(articles) { article ->
+                            LocalArticleItem(
+                                article = article,
+                                navController = navController
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -77,54 +99,8 @@ fun NewsScreen(navController: NavController, viewModel: NewsViewModel = viewMode
 
 
 
-
-
 @Composable
-fun ErrorMessage(error: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Oops! $error",
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
-
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-    }
-}
-
-@Composable
-fun NewsList(
-    articles: List<Article>,
-    navController: NavController
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(articles) { article ->
-            ArticleItem(
-                article = article,
-                navController = navController
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ArticleItem(
+fun LocalArticleItem(
     article: Article,
     navController: NavController? = null
 ) {
@@ -135,7 +111,7 @@ fun ArticleItem(
             .clickable {
                 val encodedUrl = Uri.encode(article.url)
                 if (navController != null) {
-                    navController.navigate("article/$encodedUrl")
+                    navController.navigate("article/${Uri.encode(article.url)}")
                 }
             },
         shape = RoundedCornerShape(8.dp),
@@ -195,14 +171,3 @@ fun ArticleItem(
 }
 
 
-@Composable
-fun formatDate(publishedAt: String): String {
-    return try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-        val date = inputFormat.parse(publishedAt)
-        outputFormat.format(date ?: Date())
-    } catch (e: ParseException) {
-        publishedAt
-    }
-}
